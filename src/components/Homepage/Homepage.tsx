@@ -20,7 +20,7 @@ const Homepage = () => {
                         </Row>
                         <Row>
                             <Col className='d-flex flex-column align-items-center'>
-                                <h2>Welcome {userDetails.username}</h2>
+                                <h2>Welcome {userDetails.name}</h2>
                                 <Button className='mt-2' onClick={() => navigate('/')}>Logout</Button>
                             </Col>
                         </Row>

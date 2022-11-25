@@ -3,15 +3,15 @@ import {useState} from "react";
 import {Alert, Button, Col, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import * as yup from 'yup';
-import {login} from "./action";
+import {loginApi} from "./action";
 
 const schema = yup.object().shape({
-    Username: yup.string().min(4).required(),
+    Email: yup.string().email().required(),
     Password: yup.string().min(4).required(),
 });
 
 const initialState = {
-    Username: '',
+    Email: '',
     Password: ''
 };
 
@@ -20,15 +20,15 @@ const Login = () => {
     const navigate = useNavigate();
     const [error, setError] = useState<string>('');
 
-    const handleOnLogin = (values: { Username: any; Password: any; }) => {
-        const response = login(values.Username, values.Password);
-        const username = values.Username;
-        console.log(response);
-        if (response === "success") {
-            navigate('/home', {state: {username}});
+    const handleOnLogin = async (values: { Email: any; Password: any; }) => {
+        const res: any = await loginApi(values.Email, values.Password);
+        if (res.message === "success") {
+            const name = res.data.Name;
+            navigate('/home', {state: {name}});
         } else {
-            setError(response);
+            setError(res.message);
         }
+
     }
 
     return (
@@ -46,21 +46,22 @@ const Login = () => {
                         <Row>
                             <Col className='px-4'>
                                 <Formik validationSchema={schema} onSubmit={console.log} initialValues={initialState}>
-                                    {({ handleChange, handleBlur, values,
+                                    {({
+                                          handleChange, handleBlur, values,
                                           touched, errors,
                                       }) => (
                                         <Form>
                                             <Form.Group className="mb-3" controlId="formBasicEmail">
-                                                <Form.Label>Username</Form.Label>
-                                                <Form.Control type="text" placeholder="Enter username"
-                                                              name="Username"
-                                                              value={values.Username}
+                                                <Form.Label>Email</Form.Label>
+                                                <Form.Control type="text" placeholder="Enter email"
+                                                              name="Email"
+                                                              value={values.Email}
                                                               onChange={handleChange}
-                                                              isValid={touched.Username && !errors.Username}
-                                                              isInvalid={!!errors.Username}
+                                                              isValid={touched.Email && !errors.Email}
+                                                              isInvalid={!!errors.Email}
                                                               onBlur={handleBlur}/>
                                                 <Form.Control.Feedback type="invalid">
-                                                    {errors.Username}
+                                                    {errors.Email}
                                                 </Form.Control.Feedback>
                                             </Form.Group>
                                             <Form.Group className="mb-3" controlId="formBasicEmail">
